@@ -1,10 +1,11 @@
 import numpy as np
 from physics_sim import PhysicsSim
 
+
 class Task():
     """Task (environment) that defines the goal and provides feedback to the agent."""
     def __init__(self, init_pose=None, init_velocities=None, 
-        init_angle_velocities=None, runtime=5., target_pos=None):
+                 init_angle_velocities=None, runtime=5., target_pos=None):
         """Initialize a Task object.
         Params
         ======
@@ -18,7 +19,7 @@ class Task():
         self.sim = PhysicsSim(init_pose, init_velocities, init_angle_velocities, runtime) 
         self.action_repeat = 3
 
-        self.state_size = self.action_repeat * 6
+        self.state_size = self.action_repeat * 9
         self.action_low = 0
         self.action_high = 900
         self.action_size = 4
@@ -28,22 +29,23 @@ class Task():
 
     def get_reward(self):
         """Uses current pose of sim to return reward."""
-        reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
+        reward = 1. - .3 * (abs(self.sim.pose[:3] - self.target_pos)).sum() - .01 * (abs(self.sim.v)).sum()
         return reward
 
     def step(self, rotor_speeds):
         """Uses action to obtain next state, reward, done."""
         reward = 0
-        pose_all = []
+        # pose_all = []
+        vp_all = []
         for _ in range(self.action_repeat):
-            done = self.sim.next_timestep(rotor_speeds) # update the sim pose and velocities
-            reward += self.get_reward() 
-            pose_all.append(self.sim.pose)
-        next_state = np.concatenate(pose_all)
+            done = self.sim.next_timestep(rotor_speeds)  # update the sim pose and velocities
+            reward += self.get_reward()
+            vp_all.append(np.concatenate([self.sim.pose, self.sim.v]))
+        next_state = np.concatenate(vp_all)
         return next_state, reward, done
 
     def reset(self):
         """Reset the sim to start a new episode."""
         self.sim.reset()
-        state = np.concatenate([self.sim.pose] * self.action_repeat) 
+        state = np.concatenate([self.sim.pose, self.sim.v] * self.action_repeat)
         return state

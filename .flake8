@@ -1,0 +1,16 @@
+[flake8]
+ignore =
+    # W293: Whitespace on a line
+    W293,
+    # W291: Trailing whitespace
+    W291,
+    # E712: Comparison to True can use ==
+    E712,
+    # E402: Module level import not at top of file
+    E402
+
+exclude =
+    # No need to traverse our git directory
+    .git,
+
+max-line-length = 120
