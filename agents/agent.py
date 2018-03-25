@@ -20,7 +20,7 @@ class DDPG():
         self.action_range = self.action_high - self.action_low
 
         # Actor (policy) model
-        self.actor_lr = 1e-3
+        self.actor_lr = 1e-4
         self.actor_local = Actor(self.state_size, self.action_size, self.action_low, self.action_high, 
                                  learning_rate=self.actor_lr)
         self.actor_target = Actor(self.state_size, self.action_size, self.action_low, self.action_high, 
@@ -42,19 +42,19 @@ class DDPG():
 
         # Noise process
         self.exploration_mu = 0
-        self.exploration_theta = 0.015
-        self.exploration_sigma = 0.02
+        self.exploration_theta = 1.5e-1
+        self.exploration_sigma = 2.0e-2
         self.noise = OUNoise(self.action_size, mu=self.exploration_mu, theta=self.exploration_theta,
                              sigma=self.exploration_sigma)
 
         # Replay memory
         self.buffer_size = 100000
-        self.batch_size = 64
+        self.batch_size = 128
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
         self.gamma = 0.99  # discount factor
-        self.tau = 0.0001  # for soft update of target parameters
+        self.tau = 0.001  # for soft update of target parameters
 
         # Score tracker
         self.best_score = -np.inf

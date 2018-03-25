@@ -86,7 +86,7 @@ dependencies:
   - pyyaml==3.12
   - scipy==1.0.0
   - tensorboard==1.6.0
-  - tensorflow==1.6.0
+  - tensorflow-gpu==1.6.0
   - termcolor==1.1.0
   - werkzeug==0.14.1
 prefix: /Users/kristjansb/anaconda/envs/quadcop
