@@ -42,26 +42,14 @@ class Actor:
         reshape = layers.Reshape((9, 3))(states)
 
         # Add hidden layers
-        #net = layers.Dense(units=8, activation='sigmoid')(states)
-        #net = layers.Dense(units=16, activation='sigmoid')(net)
         net = layers.CuDNNLSTM(units=16, return_sequences=True)(reshape)
         net = layers.CuDNNLSTM(units=32)(net)
-        #net = layers.Dense(units=16)(states)
-        #net = layers.BatchNormalization()(net)
-        #net = layers.Activation('tanh')(net)
-        net = layers.Dense(units=32, 
-                           kernel_regularizer=regularizers.l2(0.01))(net)
+        net = layers.Dense(units=32, kernel_regularizer=regularizers.l2(0.01))(net)
         net = layers.BatchNormalization()(net)
         net = layers.LeakyReLU(alpha=0.1)(net)
-        #net = layers.Activation('sigmoid')(net)
-        net = layers.Dense(units=64, 
-                           kernel_regularizer=regularizers.l2(0.01))(net)
+        net = layers.Dense(units=64, kernel_regularizer=regularizers.l2(0.01))(net)
         net = layers.BatchNormalization()(net)
         net = layers.LeakyReLU(alpha=0.1)(net)
-        #net = layers.Activation('sigmoid')(net)
-        #net = layers.Dense(units=64)(net)
-        #net = layers.BatchNormalization()(net)
-        #net = layers.Activation('relu')(net)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
@@ -115,29 +103,21 @@ class Critic:
         actions = layers.Input(shape=(self.action_size,), name='actions')
 
         # Add hidden layers for state pathway
-        #net_states = layers.Dense(units=16, activation='relu')(states)
-        #net_states = layers.Dense(units=32, activation='relu')(net_states)
         reshape = layers.Reshape((9, 3))(states)
         net_states = layers.CuDNNLSTM(units=16)(reshape)
         net_states = layers.Dense(units=32)(states)
         net_states = layers.BatchNormalization()(net_states)
-        #net_states = layers.Activation('relu')(net_states)
         net_states = layers.LeakyReLU(alpha=0.3)(net_states)
         net_states = layers.Dense(units=64)(net_states)
         net_states = layers.BatchNormalization()(net_states)
-        #net_states = layers.Activation('relu')(net_states)
         net_states = layers.LeakyReLU(alpha=0.3)(net_states)
 
         # Add hidden layers for action pathway
-        #net_actions = layers.Dense(units=16, activation='relu')(actions)
-        #net_actions = layers.Dense(units=32, activation='relu')(net_actions)
         net_actions = layers.Dense(units=32)(actions)
         net_actions = layers.BatchNormalization()(net_actions)
-        #net_actions = layers.Activation('relu')(net_actions)
         net_actions = layers.LeakyReLU(alpha=0.3)(net_actions)
         net_actions = layers.Dense(units=64)(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
-        #net_actions = layers.Activation('relu')(net_actions)
         net_actions = layers.LeakyReLU(alpha=0.3)(net_actions)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
